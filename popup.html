@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #6366f1; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; width: 350px; overflow-x: hidden; }
+        .container { padding: 15px; }
+        .screen { background: #000; color: #22c55e; padding: 15px; text-align: right; font-size: 1.5rem; border-radius: 8px; margin-bottom: 15px; min-height: 40px; border: 1px solid #334155; }
+        
+        .tabs { display: flex; gap: 5px; margin-bottom: 10px; }
+        .tabs button { flex: 1; padding: 8px; font-size: 0.7rem; cursor: pointer; background: var(--card); border: 1px solid #334155; color: white; border-radius: 4px; }
+        .tabs button.active { background: var(--accent); }
+
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        button { padding: 15px; border: none; border-radius: 6px; background: var(--card); color: white; cursor: pointer; font-weight: bold; }
+        button:hover { opacity: 0.8; }
+        .btn-op { background: #334155; color: #818cf8; }
+        .btn-eq { background: var(--accent); grid-column: span 2; }
+
+        input, textarea, select { width: 100%; padding: 10px; margin: 5px 0; border-radius: 4px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        .hidden { display: none; }
+        #ai-response { font-size: 0.85rem; background: #111; padding: 10px; margin-top: 10px; border-radius: 5px; max-height: 200px; overflow-y: auto; color: #cbd5e1; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 style="margin: 0 0 10px 0; color: var(--accent);">JEE Scholar Calc</h3>
+        
+        <div class="tabs">
+            <button onclick="showTab('calc')" id="t-calc" class="active">MATH</button>
+            <button onclick="showTab('ai')" id="t-ai">JEE AI</button>
+            <button onclick="showTab('conv')" id="t-conv">TOOLS</button>
+        </div>
+
+        <div id="view-calc">
+            <div id="display" class="screen">0</div>
+            <div class="grid">
+                <button onclick="clearS()">C</button><button onclick="press('(')">(</button><button onclick="press(')')">)</button><button class="btn-op" onclick="press('/')">/</button>
+                <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button><button class="btn-op" onclick="press('*')">×</button>
+                <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button><button class="btn-op" onclick="press('-')">-</button>
+                <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button><button class="btn-op" onclick="press('+')">+</button>
+                <button onclick="press('0')">0</button><button onclick="press('.')">.</button><button class="btn-eq" onclick="solve()">=</button>
+            </div>
+        </div>
+
+        <div id="view-ai" class="hidden">
+            <textarea id="ai-ques" rows="4" placeholder="Paste complex JEE question here..."></textarea>
+            <button onclick="askAI()" style="width:100%; background: var(--accent);">Get Step-by-Step Solution</button>
+            <div id="ai-response">AI Explanation will appear here...</div>
+        </div>
+
+        <div id="view-conv" class="hidden">
+            <small>BMI Calculator (kg/m)</small>
+            <div style="display:flex; gap:5px;">
+                <input type="number" id="bmi-w" placeholder="kg">
+                <input type="number" id="bmi-h" placeholder="m">
+            </div>
+            <button onclick="calcBMI()" style="width:100%; margin-bottom:10px;">Calc BMI</button>
+            
+            <small>Unit Converter (cm to inch)</small>
+            <input type="number" id="unit-val" placeholder="Value in cm" oninput="unitConv()">
+            <div id="unit-res" style="margin-top:5px; color:var(--accent);">Result: 0 in</div>
+        </div>
+    </div>
+
+    <script>
+        let d = document.getElementById('display');
+        
+        function showTab(tab) {
+            ['view-calc', 'view-ai', 'view-conv'].forEach(v => document.getElementById(v).classList.add('hidden'));
+            ['t-calc', 't-ai', 't-conv'].forEach(t => document.getElementById(t).classList.remove('active'));
+            document.getElementById('view-' + tab).classList.remove('hidden');
+            document.getElementById('t-' + tab).classList.add('active');
+        }
+
+        // Basic Math logic
+        function press(v) { if(d.innerText === '0') d.innerText = v; else d.innerText += v; }
+        function clearS() { d.innerText = '0'; }
+        function solve() { try { d.innerText = eval(d.innerText); } catch { d.innerText = 'Error'; } }
+
+        // BMI Logic
+        function calcBMI() {
+            let w = document.getElementById('bmi-w').value;
+            let h = document.getElementById('bmi-h').value;
+            if(w && h) alert("BMI: " + (w / (h*h)).toFixed(2));
+        }
+
+        function unitConv() {
+            let v = document.getElementById('unit-val').value;
+            document.getElementById('unit-res').innerText = "Result: " + (v * 0.3937).toFixed(2) + " in";
+        }
+
+        // AI Logic (Simulation)
+        async function askAI() {
+            let q = document.getElementById('ai-ques').value;
+            let res = document.getElementById('ai-response');
+            if(!q) return;
+            res.innerText = "Connecting to JEE Neural Network...";
+            
+            // For a real app, you would fetch from Gemini API here.
+            // Replace this timeout with your actual API call.
+            setTimeout(() => {
+                res.innerText = "Step 1: Identify the concept (e.g., Integration by parts).\nStep 2: Apply Formula...\nStep 3: Simplify...\n\nResult: 2π/3";
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
