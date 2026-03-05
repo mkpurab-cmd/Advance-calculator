@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "JEE AI Scholar Calc",
+  "version": "1.0",
+  "description": "Advanced Calculator with JEE AI Solver and Converters",
+  "action": {
+    "default_popup": "popup.html",
+    "default_width": 400,
+    "default_height": 600
+  },
+  "permissions": ["storage"]
+}
